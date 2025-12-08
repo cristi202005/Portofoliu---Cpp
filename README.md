@@ -1,13 +1,12 @@
-# Mini-proiect OOP în C++
+# Mini OOP Project in C++
 
-Acest proiect conține mai multe clase care modelează elemente dintr-un sistem de farmacie (Angajat, Medicament, TestCovid, Reteta și Marfa). Scopul proiectului a fost să aplic conceptele OOP în C++ și să lucrez cu memorie dinamică.
+This project contains several classes that model elements from a pharmacy system (Employee, Medicine, CovidTest, Prescription, and Goods). The purpose of the project was to apply OOP concepts in C++ and work with dynamic memory.
 
-## Caracteristici principale
-- definirea și folosirea de clase cu atribute private și metode publice
-- constructori multipli, destructor, copy constructor și operator=
-- gestionarea memoriei dinamice pentru câmpuri de tip char* și vectori
-- utilizarea membrilor statici și a unui enum pentru tipuri de test
-- suprascrierea operatorilor >> și << pentru citire și afișare
+## Main Features
+- defining and using classes with private attributes and public methods
+- multiple constructors, destructor, copy constructor and operator=
+- managing dynamic memory for char* fields and arrays
+- using static members and an enum for test types
+- overloading the >> and << operators for input and output
 
-Proiectul m-a ajutat să înțeleg mai bine cum se implementează corect mecanismele OOP în C++ și cum se gestionează resursele într-o aplicație.
-
+The project helped me better understand how OOP mechanisms are correctly implemented in C++ and how resources are managed within an application.
