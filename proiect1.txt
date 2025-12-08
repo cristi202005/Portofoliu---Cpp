@@ -1,0 +1,663 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+
+using namespace std;
+
+enum TestType { PCR, rapid_Covid, Covid_antibodies };
+
+class Employee {
+private:
+    char* fullName;
+    int personalNumericCode;
+    float netSalary;
+    bool hasMin3YearsExperience;
+    string position;
+
+public:
+    Employee() {
+        this->fullName = NULL;
+        this->personalNumericCode = 6050205087731;
+        this->netSalary = 1754;
+        this->hasMin3YearsExperience = 0;
+        this->position = "cashier";
+    }
+
+    Employee(const char* fullName, int personalNumericCode, float netSalary, bool hasMin3YearsExperience, string position) {
+        this->fullName = new char[strlen(fullName) + 1];
+        strcpy_s(this->fullName, strlen(fullName) + 1, fullName);
+        this->personalNumericCode = personalNumericCode;
+        this->netSalary = netSalary;
+        this->hasMin3YearsExperience = hasMin3YearsExperience;
+        this->position = position;
+    }
+
+    float getNetSalary() {
+        return this->netSalary;
+    }
+
+    void setNetSalary(float netSalary) {
+        if (netSalary > 1000) {
+            this->netSalary = netSalary;
+        }
+    }
+
+    char* getFullName() {
+        return fullName;
+    }
+
+    void setFullName(const char* fullName) {
+        if (fullName && strlen(fullName) > 5) {
+            if (this->fullName) {
+                delete[] this->fullName;
+            }
+            this->fullName = new char[strlen(fullName) + 1];
+            strcpy_s(this->fullName, strlen(fullName) + 1, fullName);
+        }
+    }
+
+    Employee(const Employee& emp) {
+        if (emp.fullName != NULL) {
+            this->fullName = new char[strlen(emp.fullName) + 1];
+            strcpy_s(this->fullName, strlen(emp.fullName) + 1, emp.fullName);
+        }
+        else {
+            this->fullName = NULL;
+        }
+        this->personalNumericCode = emp.personalNumericCode;
+        this->netSalary = emp.netSalary;
+        this->hasMin3YearsExperience = emp.hasMin3YearsExperience;
+        this->position = emp.position;
+    }
+
+    const Employee& operator=(const Employee& emp) {
+        if (this != &emp) {
+            if (emp.fullName != NULL) {
+                if (this->fullName != NULL) {
+                    delete[] this->fullName;
+                }
+                this->fullName = new char[strlen(emp.fullName) + 1];
+                strcpy_s(this->fullName, strlen(emp.fullName) + 1, emp.fullName);
+            }
+            else {
+                this->fullName = NULL;
+            }
+            this->personalNumericCode = emp.personalNumericCode;
+            this->netSalary = emp.netSalary;
+            this->hasMin3YearsExperience = emp.hasMin3YearsExperience;
+            this->position = emp.position;
+        }
+        return *this;
+    }
+
+    ~Employee() {
+        if (this->fullName != NULL) {
+            delete[] this->fullName;
+        }
+    }
+
+    friend istream& operator>>(istream& in, Employee& emp) {
+        char buffer[25];
+        in >> buffer;
+        if (emp.fullName != NULL) {
+            delete[] emp.fullName;
+        }
+        emp.fullName = new char[strlen(buffer) + 1];
+        strcpy_s(emp.fullName, strlen(buffer) + 1, buffer);
+        in >> emp.personalNumericCode;
+        in >> emp.netSalary;
+        in >> emp.hasMin3YearsExperience;
+        in >> emp.position;
+        return in;
+    }
+
+    friend ostream& operator<<(ostream& out, const Employee& emp) {
+        out << "Full name: " << emp.fullName << endl;
+        out << "Personal Numeric Code: " << emp.personalNumericCode << endl;
+        out << "Net salary: " << emp.netSalary << endl;
+        out << "Has minimum 3 years experience? " << (emp.hasMin3YearsExperience ? "YES" : "NO") << endl;
+        out << "Employee position: " << emp.position << endl;
+        return out;
+    }
+};
+
+
+class Medicine {
+private:
+    string name;
+    float price;
+    bool requiresPrescription;
+    int expirationYear;
+    char* administrationDescription;
+    static int VAT;
+
+public:
+    Medicine() {
+        this->name = "Paracetamol";
+        this->price = 5.5f;
+        this->requiresPrescription = 0;
+        this->expirationYear = 2025;
+        this->administrationDescription = NULL;
+    }
+
+    Medicine(string name, float price, bool requiresPrescription, int expirationYear, const char* administrationDescription) {
+        this->name = name;
+        this->price = price;
+        this->requiresPrescription = requiresPrescription;
+        this->expirationYear = expirationYear;
+        this->administrationDescription = new char[strlen(administrationDescription) + 1];
+        strcpy_s(this->administrationDescription, strlen(administrationDescription) + 1, administrationDescription);
+    }
+
+    static int getVAT() {
+        return VAT;
+    }
+
+    static void setVAT(int newVAT) {
+        if (newVAT > 0)
+            VAT = newVAT;
+    }
+
+    char* getAdministrationDescription() {
+        return administrationDescription;
+    }
+
+    void setAdministrationDescription(const char* administrationDescription) {
+        if (administrationDescription && strlen(administrationDescription) > 3) {
+            if (this->administrationDescription) {
+                delete[] this->administrationDescription;
+            }
+            this->administrationDescription = new char[strlen(administrationDescription) + 1];
+            strcpy_s(this->administrationDescription, strlen(administrationDescription) + 1, administrationDescription);
+        }
+    }
+
+    Medicine(const Medicine& med) {
+        this->name = med.name;
+        this->price = med.price;
+        this->requiresPrescription = med.requiresPrescription;
+        this->expirationYear = med.expirationYear;
+        if (med.administrationDescription != NULL) {
+            this->administrationDescription = new char[strlen(med.administrationDescription) + 1];
+            strcpy_s(this->administrationDescription, strlen(med.administrationDescription) + 1, med.administrationDescription);
+        }
+        else {
+            this->administrationDescription = NULL;
+        }
+    }
+
+    const Medicine& operator=(const Medicine& med) {
+        if (this != &med) {
+            this->name = med.name;
+            this->price = med.price;
+            this->requiresPrescription = med.requiresPrescription;
+            this->expirationYear = med.expirationYear;
+            if (med.administrationDescription != NULL) {
+                if (this->administrationDescription != NULL) {
+                    delete[] this->administrationDescription;
+                }
+                this->administrationDescription = new char[strlen(med.administrationDescription) + 1];
+                strcpy_s(this->administrationDescription, strlen(med.administrationDescription) + 1, med.administrationDescription);
+            }
+            else {
+                this->administrationDescription = NULL;
+            }
+        }
+        return *this;
+    }
+
+    ~Medicine() {
+        if (this->administrationDescription != NULL) {
+            delete[] this->administrationDescription;
+        }
+    }
+
+    friend istream& operator>>(istream& in, Medicine& med) {
+        char buffer[21];
+        in >> med.name;
+        in >> med.price;
+        in >> med.requiresPrescription;
+        in >> med.expirationYear;
+        in >> buffer;
+        if (med.administrationDescription != NULL) {
+            delete[] med.administrationDescription;
+        }
+        med.administrationDescription = new char[strlen(buffer) + 1];
+        strcpy_s(med.administrationDescription, strlen(buffer) + 1, buffer);
+        in >> med.VAT;
+        return in;
+    }
+
+    friend ostream& operator<<(ostream& out, const Medicine& med) {
+        out << "Medicine name: " << med.name << endl;
+        out << "Price: " << med.price << endl;
+        out << "Requires prescription? " << (med.requiresPrescription ? "YES" : "NO") << endl;
+        out << "Expiration year: " << med.expirationYear << endl;
+        out << "Administration details: " << med.administrationDescription << endl;
+        out << "VAT applied: " << med.VAT << endl;
+        return out;
+    }
+};
+
+int Medicine::VAT = 9;
+
+
+class CovidTest {
+private:
+    TestType type;
+    char* symptoms;
+    bool positive;
+    static int totalTests;
+    static int totalPositiveTests;
+    static int totalNegativeTests;
+
+public:
+    CovidTest() {
+        this->type = PCR;
+        this->symptoms = NULL;
+        this->positive = 1;
+        totalTests++;
+        totalPositiveTests++;
+    }
+
+    CovidTest(TestType type, const char* symptoms, bool positive) {
+        this->type = type;
+        this->symptoms = new char[strlen(symptoms) + 1];
+        strcpy_s(this->symptoms, strlen(symptoms) + 1, symptoms);
+        this->positive = positive;
+
+        totalTests++;
+        if (this->positive == 1) totalPositiveTests++;
+        else totalNegativeTests++;
+    }
+
+    static int getTotalTests() {
+        return totalTests;
+    }
+
+    static int getTotalPositiveTests() {
+        return totalPositiveTests;
+    }
+
+    char* getSymptoms() {
+        return symptoms;
+    }
+
+    void setSymptoms(const char* symptoms) {
+        if (symptoms && strlen(symptoms) > 3) {
+            if (this->symptoms) delete[] this->symptoms;
+            this->symptoms = new char[strlen(symptoms) + 1];
+            strcpy_s(this->symptoms, strlen(symptoms) + 1, symptoms);
+        }
+    }
+
+    CovidTest(const CovidTest& test) {
+        this->type = test.type;
+        if (test.symptoms != NULL) {
+            this->symptoms = new char[strlen(test.symptoms) + 1];
+            strcpy_s(this->symptoms, strlen(test.symptoms) + 1, test.symptoms);
+        }
+        else this->symptoms = NULL;
+
+        this->positive = test.positive;
+
+        totalTests++;
+        if (test.positive == 1) totalPositiveTests++;
+        else totalNegativeTests++;
+    }
+
+    const CovidTest& operator=(const CovidTest& test) {
+        if (this != &test) {
+            this->type = test.type;
+            if (test.symptoms != NULL) {
+                if (this->symptoms != NULL) delete[] this->symptoms;
+                this->symptoms = new char[strlen(test.symptoms) + 1];
+                strcpy_s(this->symptoms, strlen(test.symptoms) + 1, test.symptoms);
+            }
+            else this->symptoms = NULL;
+
+            this->positive = test.positive;
+        }
+        return *this;
+    }
+
+    ~CovidTest() {
+        if (this->symptoms != NULL) delete[] this->symptoms;
+    }
+
+    friend istream& operator>>(istream& in, CovidTest& test) {
+        char buffer[21];
+        in >> buffer;
+
+        if (test.symptoms != NULL) delete[] test.symptoms;
+
+        test.symptoms = new char[strlen(buffer) + 1];
+        strcpy_s(test.symptoms, strlen(buffer) + 1, buffer);
+        in >> test.positive;
+
+        return in;
+    }
+
+    friend ostream& operator<<(ostream& out, CovidTest& test) {
+        out << "Test type: ";
+        if (test.type == 0) out << "PCR" << endl;
+        else if (test.type == 1) out << "Rapid antigen test" << endl;
+        else out << "Covid antibodies test" << endl;
+
+        out << test.symptoms << endl;
+        out << test.positive << endl;
+        out << test.totalTests << endl;
+        out << test.totalPositiveTests << endl;
+        out << test.totalNegativeTests << endl;
+
+        return out;
+    }
+};
+
+int CovidTest::totalTests = 0;
+int CovidTest::totalPositiveTests = 0;
+int CovidTest::totalNegativeTests = 0;
+
+
+
+class Prescription {
+private:
+    string clientName;
+    string doctorName;
+    float priceWithoutCompensation;
+    float compensatedPrice;
+    char* diagnosis;
+    bool hasHealthCard;
+
+public:
+    Prescription() {
+        this->clientName = "Surdu David";
+        this->doctorName = "Anghel Florin";
+        this->priceWithoutCompensation = 85.99f;
+        this->compensatedPrice = 56.5f;
+        this->diagnosis = NULL;
+        this->hasHealthCard = 1;
+    }
+
+    Prescription(string clientName, string doctorName, float priceWithoutCompensation, float compensatedPrice, const char* diagnosis, bool hasHealthCard) {
+        this->clientName = clientName;
+        this->doctorName = doctorName;
+        this->priceWithoutCompensation = priceWithoutCompensation;
+        this->compensatedPrice = compensatedPrice;
+        this->diagnosis = new char[strlen(diagnosis) + 1];
+        strcpy_s(this->diagnosis, strlen(diagnosis) + 1, diagnosis);
+        this->hasHealthCard = hasHealthCard;
+    }
+
+    Prescription(const Prescription& prescription) {
+        this->clientName = prescription.clientName;
+        this->doctorName = prescription.doctorName;
+        this->priceWithoutCompensation = prescription.priceWithoutCompensation;
+        this->compensatedPrice = prescription.compensatedPrice;
+
+        if (prescription.diagnosis != NULL) {
+            this->diagnosis = new char[strlen(prescription.diagnosis) + 1];
+            strcpy_s(this->diagnosis, strlen(prescription.diagnosis) + 1, prescription.diagnosis);
+        }
+        else this->diagnosis = NULL;
+
+        this->hasHealthCard = prescription.hasHealthCard;
+    }
+
+    const Prescription& operator=(const Prescription& prescription) {
+        if (this != &prescription) {
+            this->clientName = prescription.clientName;
+            this->doctorName = prescription.doctorName;
+            this->priceWithoutCompensation = prescription.priceWithoutCompensation;
+            this->compensatedPrice = prescription.compensatedPrice;
+
+            if (prescription.diagnosis != NULL) {
+                if (this->diagnosis != NULL) delete[] this->diagnosis;
+                this->diagnosis = new char[strlen(prescription.diagnosis) + 1];
+                strcpy_s(this->diagnosis, strlen(prescription.diagnosis) + 1, prescription.diagnosis);
+            }
+            else this->diagnosis = NULL;
+
+            this->hasHealthCard = prescription.hasHealthCard;
+        }
+        return *this;
+    }
+
+    float getPriceWithoutCompensation() { return priceWithoutCompensation; }
+    float getCompensatedPrice() { return compensatedPrice; }
+
+    void setPriceWithoutCompensation(float val) { if (val > 0) priceWithoutCompensation = val; }
+    void setCompensatedPrice(float val) { if (val > 0) compensatedPrice = val; }
+
+    char* getDiagnosis() { return diagnosis; }
+    void setDiagnosis(const char* diag) {
+        if (diag && strlen(diag) > 4) {
+            if (this->diagnosis) delete[] this->diagnosis;
+            this->diagnosis = new char[strlen(diag) + 1];
+            strcpy_s(this->diagnosis, strlen(diag) + 1, diag);
+        }
+    }
+
+    ~Prescription() {
+        if (this->diagnosis != NULL) delete[] this->diagnosis;
+    }
+
+    friend istream& operator>>(istream& in, Prescription& prescription) {
+        char buffer[21];
+        in >> prescription.clientName;
+        in >> prescription.doctorName;
+        in >> prescription.compensatedPrice;
+        in >> prescription.priceWithoutCompensation;
+        in >> buffer;
+
+        if (prescription.diagnosis != NULL) delete[] prescription.diagnosis;
+
+        prescription.diagnosis = new char[strlen(buffer) + 1];
+        strcpy_s(prescription.diagnosis, strlen(buffer) + 1, buffer);
+        in >> prescription.hasHealthCard;
+        return in;
+    }
+
+    friend ostream& operator<<(ostream& out, Prescription& prescription) {
+        out << "Client name: " << prescription.clientName << endl;
+        out << "Doctor name: " << prescription.doctorName << endl;
+        out << "Compensated price: " << prescription.compensatedPrice << endl;
+        out << "Non-compensated price: " << prescription.priceWithoutCompensation << endl;
+        out << "Diagnosis: " << prescription.diagnosis << endl;
+        out << "Has health card? " << (prescription.hasHealthCard ? "NO" : "YES");
+        return out;
+    }
+};
+
+
+class Goods {
+private:
+    char* supplier;
+    int productCount;
+    float* price;
+    bool urgentOrder;
+
+public:
+    Goods() {
+        this->supplier = NULL;
+        this->productCount = 4;
+        this->price = NULL;
+        this->urgentOrder = 1;
+    }
+
+    Goods(const char* supplier, int productCount, float* price, bool urgentOrder) {
+        this->supplier = new char[strlen(supplier) + 1];
+        strcpy_s(this->supplier, strlen(supplier) + 1, supplier);
+        this->productCount = productCount;
+        this->price = new float[productCount];
+
+        for (int i = 0; i < productCount; i++) {
+            this->price[i] = price[i];
+        }
+
+        this->urgentOrder = urgentOrder;
+    }
+
+    Goods(const Goods& goods) {
+        if (goods.supplier != NULL) {
+            this->supplier = new char[strlen(goods.supplier) + 1];
+            strcpy_s(this->supplier, strlen(goods.supplier) + 1, goods.supplier);
+        }
+        else this->supplier = NULL;
+
+        this->productCount = goods.productCount;
+
+        if (goods.price != NULL) {
+            this->price = new float[goods.productCount];
+            for (int i = 0; i < goods.productCount; i++) {
+                this->price[i] = goods.price[i];
+            }
+        }
+        else this->price = NULL;
+
+        this->urgentOrder = goods.urgentOrder;
+    }
+
+    const Goods& operator=(const Goods& goods) {
+        if (this != &goods) {
+            if (goods.supplier != NULL) {
+                if (this->supplier != NULL) delete[] this->supplier;
+                this->supplier = new char[strlen(goods.supplier) + 1];
+                strcpy_s(this->supplier, strlen(goods.supplier) + 1, goods.supplier);
+            }
+            else this->supplier = NULL;
+
+            this->productCount = goods.productCount;
+
+            if (goods.price != NULL) {
+                if (this->price != NULL) delete[] this->price;
+                this->price = new float[goods.productCount];
+                for (int i = 0; i < goods.productCount; i++) {
+                    this->price[i] = goods.price[i];
+                }
+            }
+            else this->price = NULL;
+
+            this->urgentOrder = goods.urgentOrder;
+        }
+        return *this;
+    }
+
+    int getUrgentOrder() { return urgentOrder; }
+    void setUrgentOrder(bool u) { if (u == 1 || u == 0) urgentOrder = u; }
+
+    char* getSupplier() { return supplier; }
+    void setSupplier(const char* supplier) {
+        if (supplier && strlen(supplier) > 2) {
+            if (this->supplier != NULL) delete[] this->supplier;
+            this->supplier = new char[strlen(supplier) + 1];
+            strcpy_s(this->supplier, strlen(supplier) + 1, supplier);
+        }
+    }
+
+    ~Goods() {
+        if (price != NULL) delete[] price;
+    }
+
+    friend istream& operator>>(istream& in, Goods& goods) {
+        char buffer[21];
+        in >> buffer;
+
+        if (goods.supplier != NULL) delete[] goods.supplier;
+
+        goods.supplier = new char[strlen(buffer) + 1];
+        strcpy_s(goods.supplier, strlen(buffer) + 1, buffer);
+
+        in >> goods.productCount;
+
+        if (goods.price != NULL) delete[] goods.price;
+
+        goods.price = new float[goods.productCount];
+        for (int i = 0; i < goods.productCount; i++) {
+            in >> goods.price[i];
+        }
+
+        in >> goods.urgentOrder;
+        return in;
+    }
+
+    friend ostream& operator<<(ostream& out, const Goods& goods) {
+        out << "Supplier name: " << goods.supplier << endl;
+        out << "Number of ordered products: " << goods.productCount << endl;
+
+        for (int i = 0; i < goods.productCount; i++) {
+            out << "Price of product " << i + 1 << ": " << goods.price[i] << endl;
+        }
+
+        out << "Is it an urgent order? " << (goods.urgentOrder ? "NO" : "YES") << endl;
+        return out;
+    }
+};
+
+
+void main() {
+
+    //EMPLOYEE CLASS:
+    Employee emp1("Ciobanu Gabriel", 5040577092231, 2300, false, "cashier");
+    Employee emp2;
+    Employee emp3;
+    cout << emp1.getFullName() << endl;
+    cout << emp1.getNetSalary() << endl;
+    emp1.setNetSalary(2600);
+    cout << emp1.getNetSalary() << endl;
+    emp2 = emp1;
+    cout << emp2.getNetSalary() << endl;
+    cin >> emp3;
+    cout << emp3;
+
+    //MEDICINE CLASS:
+    Medicine med1("Nurofen", 20.5f, 0, 2023, "twice a day");
+    Medicine med2;
+    Medicine med3;
+    cout << med1.getAdministrationDescription() << endl;
+    cout << med1.getVAT() << endl;
+    med1.setAdministrationDescription("every 8 hours");
+    cout << med1.getAdministrationDescription() << endl;
+    med2 = med1;
+    cout << med2.getAdministrationDescription() << endl;
+    cin >> med3;
+    cout << med3;
+
+    //COVIDTEST CLASS:
+    CovidTest test1(PCR, "cough, no smell", 1);
+    CovidTest test2;
+    CovidTest test3;
+    cout << test1.getSymptoms() << endl;
+    cout << test1.getTotalPositiveTests() << endl;
+    test1.setSymptoms("no taste and no smell");
+    cout << test1.getSymptoms() << endl;
+    test2 = test1;
+    cout << test2.getSymptoms() << endl;
+    cin >> test3;
+    cout << test2;
+
+    //PRESCRIPTION CLASS:
+    Prescription prescription1("Vlasceanu Elena", "Toma Andreea", 105.6f, 89.5f, "Seasonal flu", 1);
+    Prescription prescription2;
+    Prescription prescription3;
+    cout << prescription1.getDiagnosis() << endl;
+    cout << prescription1.getCompensatedPrice() << endl;
+    prescription1.setCompensatedPrice(87.7f);
+    cout << prescription1.getCompensatedPrice() << endl;
+    prescription2 = prescription1;
+    cout << prescription2.getPriceWithoutCompensation() << endl;
+    cin >> prescription3;
+    cout << prescription2;
+
+    //GOODS CLASS:
+    Goods goods1("Pfizer", 3, new float[3]{ 20.5, 18, 32.5 }, 0);
+    Goods goods2;
+    Goods goods3;
+    cout << goods1.getSupplier() << endl;
+    cout << goods1.getUrgentOrder() << endl;
+    goods1.setUrgentOrder(1);
+    cout << goods1.getUrgentOrder() << endl;
+    goods2 = goods1;
+    cout << goods2.getSupplier() << endl;
+    cin >> goods3;
+    cout << goods2;
+}
